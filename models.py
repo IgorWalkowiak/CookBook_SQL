@@ -83,7 +83,7 @@ class Tag(Base):
         self.name = name
 
     def __repr__(self):
-        return '<name %r>' % (self.name)
+        return '<tag %r>' % (self.name)
 
 
 class RecipesType(Base):

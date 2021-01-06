@@ -1,0 +1,62 @@
+p {
+  padding: 1px;
+  margin: 1px;
+}
+
+.user{
+  background-color: #f1dede;
+  width: 300px;
+  border: 2px solid rgb(175, 204, 175);
+  padding: 5px;
+  margin: 10px;
+}
+.step{  
+  background-color: #bdb3b3;
+  width: 500px;
+  border: 2px solid green;
+  padding: 20px;
+  margin: 20px;
+}
+
+.ingredient{  
+  background-color: #bdb3b3;
+  width: 200px;
+  border: 2px solid green;
+  padding: 5px;
+  margin: 10px;
+}
+
+.title{
+font-size : 2em;
+}
+
+.posVote{
+  background-color: lightgreen;
+}
+
+.negVote{
+  background-color: lightsalmon;
+}
+
+
+.recipe{
+background-color: lightslategray;
+width: 400px;
+border: 5px solid red;
+padding: 10px;
+margin: 10px;
+
+}
+
+.recipes{  
+  width: 500px;
+  border: 15px solid black;
+  padding: 20px;
+  margin: 20px;
+}
+nav > a{
+width: 50px;
+  border: 3px solid black;
+  padding: 5px;
+  margin: 5px;
+}

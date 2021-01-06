@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>New recipe</title>
+    <link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='assets/style.css') }}">
+  </head>
+  <body>
+  <script src="{{ url_for('static',filename='assets/newRecipeScripts.js') }}"> </script>
+  	<form id="form1" action="newRecipe.html" method="post">
+		<label for="title">Title: </label><br>
+		<input type="text" placeholder="e.g. Burrito" id="title" name="title" width="48" height="48"><br>
+
+		<label for="description">Description: </label><br>
+		<input type="text" placeholder="e.g. Chicken with rice" id="description" name="description"><br>
+
+		<label for="calories">Calories: </label><br>
+		<input type="text" id="calories" name="calories"><br>
+
+		<label for="ingredients">Ingredients: </label><br>
+		<input type = "button" onClick="addIngredient()" value="Add next ingredient">
+		<input type = "button" onClick="removeIngredient()" value="Remove previous ingredient">
+		<div id="ingredients"> </div>
+
+		<label for="steps">Steps: </label><br>
+		<input type = "button" onClick="addStep()" value="Add next step">
+		<input type = "button" onClick="removeStep()" value="Remove previous step">
+		<div id="steps"> </div>
+
+		<label for="tags">Tags: </label><br>
+		<input type="text" id="tags" name="tags"><br>
+		<input type="submit" value="Add recipe"><br>
+	</form>
+	<br><br><br><br><br>
+	<div id="errors"></div>
+	<nav>
+        <a href="/">Home</a>
+        <a href="/recipes/browseRecipes.html">Browse recipes</a>
+        <a href='/recipes/newRecipe.html'>Add new recipe</a>
+        <a href='/loginSystem/logout.html'>Logout </a>
+        <a href='/loginSystem/login.html'>Log in</a>
+        <a href='/loginSystem/register.html'>Register</a>
+  </nav>
+  </body>
+</html>
