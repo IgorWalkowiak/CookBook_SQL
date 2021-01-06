@@ -1,9 +1,10 @@
 import enum
+import credentials
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import MetaData, Table, Column, Integer, String, Enum, create_engine, ForeignKey
 
-engine = create_engine('mysql://root:nokia@localhost/CookBook')
+engine = create_engine('mysql://{}:{}@localhost/CookBook'.format(credentials.login,credentials.password))
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))
