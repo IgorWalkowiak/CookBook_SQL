@@ -1,5 +1,5 @@
 from database import init_db, db_session
-from models import Tag, RecipesType, User, Recipe, Step, Ingredients
+from models import Tag, RecipesType, User, Recipe, Step, Ingredients, Vote
 from flask import Flask, render_template, request, session
 import credentials
 import parser
@@ -49,7 +49,7 @@ def register():
         return render_template('/login/register.html')
 
 
-@app.route('/admin', methods=['GET', 'POST'])
+@app.route('/admin')
 def admin():
     isAdmin = True
     #isAdmin = userSystem.isAdmin(login)
@@ -76,21 +76,40 @@ def adminMakeChef(usr):
     pass
 
 
-@app.route('/recipes/browseRecipes')
+@app.route('/recipes/browseRecipes', methods=['GET', 'POST'])
 def browseRecipes():
-    recipesFromDb = Recipe.query.all()
-    recipes = []
-    for dbRecipe in recipesFromDb:
-        dbSteps = Step.query.filter(Step.recipe == dbRecipe.id).all()
-        dbOwner = User.query.filter(User.id == dbRecipe.owner).first()
-        dbIngredients = Ingredients.query.filter(Ingredients.recipe == dbRecipe.id).all()
-        dbTags = (db_session.query(Tag)
-                  .join(RecipesType, RecipesType.tag == Tag.id)) \
-            .filter(RecipesType.recipe == dbRecipe.id)
-        recipe = frontendModels.Recipe(dbRecipe.id, dbOwner.name, dbRecipe.title,dbRecipe.description, dbRecipe.calories, dbSteps,
-                                       dbIngredients, dbTags, 1, 2)
-        recipes.append(recipe)
-    return render_template('recipes/browseRecipes.html', recipes=recipes)
+    if request.method == 'GET':
+        recipesFromDb = Recipe.query.all()
+        recipes = []
+        for dbRecipe in recipesFromDb:
+            dbSteps = Step.query.filter(Step.recipe == dbRecipe.id).all()
+            dbOwner = User.query.filter(User.id == dbRecipe.owner).first()
+            dbIngredients = Ingredients.query.filter(Ingredients.recipe == dbRecipe.id).all()
+            dbVotesUp = Vote.query.filter(Vote.voteType == Vote.VoteType.up).count()
+            dbVotesDown = Vote.query.filter(Vote.voteType == Vote.VoteType.down).count()
+            dbTags = (db_session.query(Tag)
+                      .join(RecipesType, RecipesType.tag == Tag.id)) \
+                .filter(RecipesType.recipe == dbRecipe.id)
+            recipe = frontendModels.Recipe(dbRecipe.id, dbOwner.name, dbRecipe.title, dbRecipe.description, dbRecipe.calories, dbSteps,
+                                           dbIngredients, dbTags, dbVotesUp, dbVotesDown)
+            recipes.append(recipe)
+        return render_template('recipes/browseRecipes.html', recipes=recipes)
+    elif request.method == 'POST':
+        sortMethod = parser.getSortMethod(request.form)
+        tagToSearch = parser.getTagSearch(request.form)
+        textToSearch = parser.getTextSearch(request.form)
+        if sortMethod == 'fromWorst':
+            pass
+        elif sortMethod == 'fromBest':
+            pass
+        else:
+            pass
+
+        print(sortMethod)
+        print(tagToSearch)
+        print(textToSearch)
+        return render_template('recipes/browseRecipes.html')
+
 
 
 @app.route('/recipes/newRecipe', methods=['GET', 'POST'])
@@ -135,14 +154,39 @@ def recipe(recipeId):
     dbSteps = Step.query.filter(Step.recipe == dbRecipe.id).all()
     dbOwner = User.query.filter(User.id == dbRecipe.owner).first()
     dbIngredients = Ingredients.query.filter(Ingredients.recipe == dbRecipe.id).all()
+    dbVotesUp = Vote.query.filter(Vote.voteType == Vote.VoteType.up).count()
+    dbVotesDown = Vote.query.filter(Vote.voteType == Vote.VoteType.down).count()
     dbTags = (db_session.query(Tag)
               .join(RecipesType, RecipesType.tag == Tag.id)) \
         .filter(RecipesType.recipe == dbRecipe.id)
-    recipe = frontendModels.Recipe(dbRecipe.id, dbOwner.name, dbRecipe.title,dbRecipe.description, dbRecipe.calories, dbSteps,
-                                   dbIngredients, dbTags, 1, 2)
+    recipe = frontendModels.Recipe(dbRecipe.id, dbOwner.name, dbRecipe.title, dbRecipe.description, dbRecipe.calories, dbSteps,
+                                   dbIngredients, dbTags, dbVotesUp, dbVotesDown)
     return render_template('recipes/recipe.html', recipe=recipe)
 
 
+
+@app.route('/recipes/voteUp/<recipeId>')
+def voteUp(recipeId):
+    if userSystem.isLoggedIn():
+        dbVote = Vote.query.filter(Vote.fromUser == userSystem.getUserId()).delete(synchronize_session=False)
+        db_session.commit()
+
+        vote = Vote(userSystem.getUserId(), recipeId, Vote.VoteType.up)
+        db_session.add(vote)
+        db_session.commit()
+    return recipe(recipeId)
+
+
+@app.route('/recipes/voteDown/<recipeId>')
+def voteDown(recipeId):
+    if userSystem.isLoggedIn():
+        dbVote = Vote.query.filter(Vote.fromUser == userSystem.getUserId()).delete(synchronize_session=False)
+        db_session.commit()
+
+        vote = Vote(userSystem.getUserId(), recipeId, Vote.VoteType.down)
+        db_session.add(vote)
+        db_session.commit()
+    return recipe(recipeId)
 
 
 if __name__ == '__main__':

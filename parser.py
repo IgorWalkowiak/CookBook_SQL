@@ -11,6 +11,9 @@ TAG_ID = 'tags'
 LOGIN_ID = 'login'
 PASSWORD_ID = 'password'
 TAG_SEPARATOR = ", "
+SORT_METHOD_ID = 'sort'
+SEARCH_TEXT_ID = 'textSearch'
+SEARCH_TAG_ID = 'tag'
 
 def getRecipe(data, ownerId):
     title = data[TITLE_ID]
@@ -31,6 +34,21 @@ def getIngredients(data, recipeId):
         except:
             break
     return ingredients
+
+
+def getSortMethod(data):
+    method = data[SORT_METHOD_ID]
+    return method
+
+
+def getTextSearch(data):
+    text = data[SEARCH_TEXT_ID]
+    return text
+
+
+def getTagSearch(data):
+    tag = data[SEARCH_TAG_ID]
+    return tag
 
 
 def getSteps(data, recipeId):

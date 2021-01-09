@@ -101,14 +101,19 @@ class RecipesType(Base):
 
 
 class Vote(Base):
+    class VoteType(enum.Enum):
+        up = 'up'
+        down = 'down'
     __tablename__ = 'votes'
     id = Column(Integer, primary_key=True)
     fromUser = Column(Integer)
     target = Column(Integer)
+    voteType = Column(Enum(VoteType))
 
-    def __init__(self, fromUser=None, target=None):
+    def __init__(self, fromUser=None, target=None, voteType=None):
         self.fromUser = fromUser
         self.target = target
+        self.voteType = voteType
 
     def __repr__(self):
         return '<target %r>' % (self.target)

@@ -24,8 +24,10 @@
 
 
       <div class = 'votes'>
-        Positive: {{recipe.votesUp}}<br>
-        Negative: {{recipe.votesDown}}<br>
+        Positive: {{recipe.votesUp}}
+        <a class ='moreLink' href='/recipes/voteUp/{{recipe.id}}'>Vote up</a><br>
+        Negative: {{recipe.votesDown}}
+        <a class ='moreLink' href='/recipes/voteDown/{{recipe.id}}'>Vote down</a><br>
         Rate: {{recipe.sum}}<br><br><br><br>
         <div>
 

@@ -15,18 +15,17 @@ Base.query = db_session.query_property()
 meta = MetaData()
 
 
-class MyEnum(enum.Enum):
+class Privileges(enum.Enum):
    guest = 1
    chef = 2
    admin = 3
-
 
 user = Table(
    'users', meta,
    Column('id', Integer, primary_key=True),
    Column('name', String(100)),
    Column('password', String(100)),
-   Column('privileges', Enum(MyEnum)),
+   Column('privileges', Enum(Privileges))
 )
 
 recipe = Table(
@@ -67,11 +66,18 @@ recipes_type = Table(
    Column('recipe', Integer, ForeignKey("recipes.id")),
 )
 
+
+class voteType(enum.Enum):
+   up = 1
+   down = 2
+
+
 vote = Table(
    'votes', meta,
    Column('id', Integer, primary_key=True),
-   Column('from', Integer, ForeignKey("users.id", ondelete='CASCADE'), nullable=False),
-   Column('target', Integer, ForeignKey("recipes.id")),
+   Column('fromUser', Integer, ForeignKey("users.id", ondelete='CASCADE'), nullable=False),
+   Column('target', Integer, ForeignKey("recipes.id"), nullable=False),
+   Column('voteType', Enum(voteType), nullable=False)
 )
 
 meta.create_all(engine)
