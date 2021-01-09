@@ -87,19 +87,10 @@ def browseRecipes():
         dbTags = (db_session.query(Tag)
                   .join(RecipesType, RecipesType.tag == Tag.id)) \
             .filter(RecipesType.recipe == dbRecipe.id)
-        print(dbOwner)
-        for tag in dbTags:
-            print("tag")
-            print(tag.name)
-        for step in dbSteps:
-            print("step")
-            print(step.description)
-        for ingred in dbIngredients:
-            print("ingred")
-            print(ingred.name)
-        print("END\n\n")
-
-    return render_template('index.html')
+        recipe = frontendModels.Recipe(dbRecipe.id, dbOwner.name, dbRecipe.title,dbRecipe.description, dbRecipe.calories, dbSteps,
+                                       dbIngredients, dbTags, 1, 2)
+        recipes.append(recipe)
+    return render_template('recipes/browseRecipes.html', recipes=recipes)
 
 
 @app.route('/recipes/newRecipe', methods=['GET', 'POST'])
@@ -137,6 +128,19 @@ def newRecipe():
     else:
         return render_template('/login/login.html')
 
+
+@app.route('/recipes/recipe/<recipeId>')
+def recipe(recipeId):
+    dbRecipe = Recipe.query.filter(Recipe.id == recipeId).first()
+    dbSteps = Step.query.filter(Step.recipe == dbRecipe.id).all()
+    dbOwner = User.query.filter(User.id == dbRecipe.owner).first()
+    dbIngredients = Ingredients.query.filter(Ingredients.recipe == dbRecipe.id).all()
+    dbTags = (db_session.query(Tag)
+              .join(RecipesType, RecipesType.tag == Tag.id)) \
+        .filter(RecipesType.recipe == dbRecipe.id)
+    recipe = frontendModels.Recipe(dbRecipe.id, dbOwner.name, dbRecipe.title,dbRecipe.description, dbRecipe.calories, dbSteps,
+                                   dbIngredients, dbTags, 1, 2)
+    return render_template('recipes/recipe.html', recipe=recipe)
 
 
 

@@ -1,6 +1,7 @@
 
 class Recipe:
-    def __init__(self, owner, title, description, calories, steps, ingredients, tags, votesUp, votesDown):
+    def __init__(self, id, owner, title, description, calories, steps, ingredients, tags, votesUp, votesDown):
+        self.id = id
         self.owner = owner
         self.title = title
         self.description = description
@@ -10,3 +11,4 @@ class Recipe:
         self.tags = tags
         self.votesUp = votesUp
         self.votesDown = votesDown
+        self.sum = votesUp-votesDown
