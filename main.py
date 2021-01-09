@@ -1,4 +1,5 @@
 from database import init_db, db_session
+from sqlalchemy import func, case
 from models import Tag, RecipesType, User, Recipe, Step, Ingredients, Vote
 from flask import Flask, render_template, request, session
 import credentials
@@ -85,8 +86,8 @@ def browseRecipes():
             dbSteps = Step.query.filter(Step.recipe == dbRecipe.id).all()
             dbOwner = User.query.filter(User.id == dbRecipe.owner).first()
             dbIngredients = Ingredients.query.filter(Ingredients.recipe == dbRecipe.id).all()
-            dbVotesUp = Vote.query.filter(Vote.voteType == Vote.VoteType.up).count()
-            dbVotesDown = Vote.query.filter(Vote.voteType == Vote.VoteType.down).count()
+            dbVotesUp = Vote.query.filter(Vote.voteType == Vote.VoteType.up).filter(Vote.target == dbRecipe.id).count()
+            dbVotesDown = Vote.query.filter(Vote.voteType == Vote.VoteType.down).filter(Vote.target == dbRecipe.id).count()
             dbTags = (db_session.query(Tag)
                       .join(RecipesType, RecipesType.tag == Tag.id)) \
                 .filter(RecipesType.recipe == dbRecipe.id)
@@ -98,17 +99,62 @@ def browseRecipes():
         sortMethod = parser.getSortMethod(request.form)
         tagToSearch = parser.getTagSearch(request.form)
         textToSearch = parser.getTextSearch(request.form)
+        mainQuery = Recipe.query
+        if textToSearch != '':
+            mainQuery = mainQuery.filter(Recipe.description.contains('ryba'))
         if sortMethod == 'fromWorst':
-            pass
+            my_case = case(
+                [
+                    (Vote.voteType == Vote.VoteType.up, 1),
+                    (Vote.voteType == Vote.VoteType.down, -1)
+                ]
+            )
+            sumOfVotes = db_session.query(
+                Recipe.id.label('recipe_id'), Vote.voteType, func.sum(my_case).label('voteTypeCount')
+            ).group_by(Recipe.id, Vote.voteType).filter(Recipe.id == Vote.target).subquery()
+            mainQuery = mainQuery.join(
+                sumOfVotes, Recipe.id == sumOfVotes.c.recipe_id).order_by(sumOfVotes.c.voteTypeCount.asc())
         elif sortMethod == 'fromBest':
-            pass
+            my_case = case(
+                [
+                    (Vote.voteType == Vote.VoteType.up, 1),
+                    (Vote.voteType == Vote.VoteType.down, -1)
+                ]
+            )
+            sumOfVotes = db_session.query(
+                Recipe.id.label('recipe_id'), Vote.voteType, func.sum(my_case).label('voteTypeCount')
+            ).group_by(Recipe.id, Vote.voteType).filter(Recipe.id == Vote.target).subquery()
+            mainQuery = mainQuery.join(
+                sumOfVotes, Recipe.id == sumOfVotes.c.recipe_id).order_by(sumOfVotes.c.voteTypeCount.desc())
         else:
             pass
 
+        if tagToSearch != '':
+            tag = Tag.query.filter(Tag.name == tagToSearch).first()
+            if tag is not None:
+                tagConnections = RecipesType.query.filter(RecipesType.tag == tag.id).all()
+                ids = [x.recipe for x in tagConnections]
+                mainQuery = mainQuery.filter(Recipe.id.in_(ids))
+            else:
+                mainQuery = mainQuery.filter(Recipe.id.in_((-1,-1)))
+        recipesFromDb = mainQuery.all()
+        recipes = []
+        for dbRecipe in recipesFromDb:
+            dbSteps = Step.query.filter(Step.recipe == dbRecipe.id).all()
+            dbOwner = User.query.filter(User.id == dbRecipe.owner).first()
+            dbIngredients = Ingredients.query.filter(Ingredients.recipe == dbRecipe.id).all()
+            dbVotesUp = Vote.query.filter(Vote.voteType == Vote.VoteType.up).filter(Vote.target == dbRecipe.id).count()
+            dbVotesDown = Vote.query.filter(Vote.voteType == Vote.VoteType.down).filter(Vote.target == dbRecipe.id).count()
+            dbTags = (db_session.query(Tag)
+                      .join(RecipesType, RecipesType.tag == Tag.id)) \
+                .filter(RecipesType.recipe == dbRecipe.id)
+            recipe = frontendModels.Recipe(dbRecipe.id, dbOwner.name, dbRecipe.title, dbRecipe.description, dbRecipe.calories, dbSteps,
+                                           dbIngredients, dbTags, dbVotesUp, dbVotesDown)
+            recipes.append(recipe)
         print(sortMethod)
         print(tagToSearch)
         print(textToSearch)
-        return render_template('recipes/browseRecipes.html')
+        return render_template('recipes/browseRecipes.html', recipes=recipes)
 
 
 
@@ -154,8 +200,8 @@ def recipe(recipeId):
     dbSteps = Step.query.filter(Step.recipe == dbRecipe.id).all()
     dbOwner = User.query.filter(User.id == dbRecipe.owner).first()
     dbIngredients = Ingredients.query.filter(Ingredients.recipe == dbRecipe.id).all()
-    dbVotesUp = Vote.query.filter(Vote.voteType == Vote.VoteType.up).count()
-    dbVotesDown = Vote.query.filter(Vote.voteType == Vote.VoteType.down).count()
+    dbVotesUp = Vote.query.filter(Vote.voteType == Vote.VoteType.up).filter(Vote.target == dbRecipe.id).count()
+    dbVotesDown = Vote.query.filter(Vote.voteType == Vote.VoteType.down).filter(Vote.target == dbRecipe.id).count()
     dbTags = (db_session.query(Tag)
               .join(RecipesType, RecipesType.tag == Tag.id)) \
         .filter(RecipesType.recipe == dbRecipe.id)
@@ -168,7 +214,7 @@ def recipe(recipeId):
 @app.route('/recipes/voteUp/<recipeId>')
 def voteUp(recipeId):
     if userSystem.isLoggedIn():
-        dbVote = Vote.query.filter(Vote.fromUser == userSystem.getUserId()).delete(synchronize_session=False)
+        dbVote = Vote.query.filter(Vote.fromUser == userSystem.getUserId()).filter(Vote.target == recipeId).delete(synchronize_session=False)
         db_session.commit()
 
         vote = Vote(userSystem.getUserId(), recipeId, Vote.VoteType.up)
@@ -180,7 +226,7 @@ def voteUp(recipeId):
 @app.route('/recipes/voteDown/<recipeId>')
 def voteDown(recipeId):
     if userSystem.isLoggedIn():
-        dbVote = Vote.query.filter(Vote.fromUser == userSystem.getUserId()).delete(synchronize_session=False)
+        dbVote = Vote.query.filter(Vote.fromUser == userSystem.getUserId()).filter(Vote.target == recipeId).delete(synchronize_session=False)
         db_session.commit()
 
         vote = Vote(userSystem.getUserId(), recipeId, Vote.VoteType.down)
