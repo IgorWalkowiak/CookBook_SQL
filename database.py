@@ -32,7 +32,7 @@ user = Table(
 recipe = Table(
    'recipes', meta,
    Column('id', Integer, primary_key=True),
-   Column('owner', Integer, ForeignKey("users.id")),
+   Column('owner', Integer, ForeignKey("users.id", ondelete='CASCADE')),
    Column('title', String(100)),
    Column('description', String(1000)),
    Column('calories', Integer)
@@ -57,7 +57,7 @@ step = Table(
 tag = Table(
    'tags', meta,
    Column('id', Integer, primary_key=True),
-   Column('name', String(100)),
+   Column('name', String(100), unique=True),
 )
 
 recipes_type = Table(
@@ -70,7 +70,7 @@ recipes_type = Table(
 vote = Table(
    'votes', meta,
    Column('id', Integer, primary_key=True),
-   Column('from', Integer, ForeignKey("users.id"), nullable=False),
+   Column('from', Integer, ForeignKey("users.id", ondelete='CASCADE'), nullable=False),
    Column('target', Integer, ForeignKey("recipes.id")),
 )
 

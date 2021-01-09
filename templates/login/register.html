@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Register</title>
+    <link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='assets/style.css') }}">
+  </head>
+  <body>
+  <h2> Register! </h2>
+    <form id="form1" action="/register" method="post">
+		<label for="login">Login: </label><br>
+		<input type="text" required id="login" name="login"><br>
+  
+		<label for="password">Password: </label><br>
+		<input type="password" required id="password" name="password"><br>
+		<input type="submit" value="Register"><br>
+    </form>
+    <br>
+
+    {% if failed == 1 %}
+        <p class="error">Nie udało się zarejestrować</p><br><br>
+    {% endif %}
+	<nav> 
+        <a href="/">Home</a>
+        <a href="/recipes/browseRecipes">Browse recipes</a>
+    <nav>
+  </body>
+</html>

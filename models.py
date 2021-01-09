@@ -7,9 +7,9 @@ from database import Base
 class User(Base):
     __tablename__ = 'users'
     class Privileges(enum.Enum):
-        guest = 1
-        chef = 2
-        admin = 3
+        guest = 'Guest'
+        chef = 'Chef'
+        admin = 'Admin'
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
     password = Column(String(100))
@@ -57,7 +57,7 @@ class Ingredients(Base):
         self.amount = amount
 
     def __repr__(self):
-        return '<name %r>' % (self.name)
+        return '<Ingredients %r>' % (self.name)
 
 
 class Step(Base):
@@ -71,7 +71,7 @@ class Step(Base):
         self.description = description
 
     def __repr__(self):
-        return '<name %r>' % (self.name)
+        return '<name %r>' % (self.description)
 
 
 class Tag(Base):
@@ -97,7 +97,7 @@ class RecipesType(Base):
         self.recipe = recipe
 
     def __repr__(self):
-        return '<tag %r>' % (self.tag)
+        return '<RecipesType %r>' % (self.tag)
 
 
 class Vote(Base):

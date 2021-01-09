@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Log in!</title>
+    <link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='assets/style.css') }}">
+  </head>
+  <body>
+    <div>
+      <h2> Log in! </h2>
+        <form id="form1" action="/login" method="post">
+            <label for="login">Login: </label><br>
+            <input type="text" required id="login" name="login"><br>
+
+            <label for="password">Password: </label><br>
+            <input type="password" required id="password" name="password"><br>
+
+            <input type="submit" value="Log in!"><br>
+        </form>
+        <br>
+    </div>
+    {% if failed == 1 %}
+        <p class="error">Nie udało się zalogować do systemu</p><br><br>
+    {% endif %}
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/recipes/browseRecipes">Browse recipses</a>
+    <nav>
+  </body>
+</html>

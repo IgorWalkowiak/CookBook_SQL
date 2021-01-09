@@ -10,6 +10,7 @@ p {
   padding: 5px;
   margin: 10px;
 }
+
 .step{  
   background-color: #bdb3b3;
   width: 500px;
@@ -54,6 +55,11 @@ margin: 10px;
   padding: 20px;
   margin: 20px;
 }
+
+.error{
+    background-color: red;
+}
+
 nav > a{
 width: 50px;
   border: 3px solid black;

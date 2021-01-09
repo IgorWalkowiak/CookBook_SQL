@@ -7,7 +7,7 @@
   </head>
   <body>
   <script src="{{ url_for('static',filename='assets/newRecipeScripts.js') }}"> </script>
-  	<form id="form1" action="newRecipe.html" method="post">
+  	<form id="form1" action="/recipes/newRecipe" method="post">
 		<label for="title">Title: </label><br>
 		<input type="text" placeholder="e.g. Burrito" id="title" name="title" width="48" height="48"><br>
 

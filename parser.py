@@ -6,8 +6,10 @@ CALORIES_ID = 'calories'
 INGREDIENT_NAME_ID = 'ingredientName'
 INGREDIENT_UNIT_ID = 'ingredientUnit'
 INGREDIENT_AMOUNT_ID = 'ingredientAmount'
-STEP_ID = 'step'
+STEP_ID = 'stepInput'
 TAG_ID = 'tags'
+LOGIN_ID = 'login'
+PASSWORD_ID = 'password'
 TAG_SEPARATOR = ", "
 
 def getRecipe(data, ownerId):
@@ -42,14 +44,21 @@ def getSteps(data, recipeId):
     return steps
 
 
-def getTags(data, recipeId):
+def getTags(data):
     rawData = data[TAG_ID]
     tagNames = rawData.split(TAG_SEPARATOR)
     tags = []
-    tagConnections = []
     for tag in tagNames:
         tempTag = Tag(tag)
         tags.append(tempTag)
-        tagConnections.append(RecipesType(tempTag.id, recipeId))
+    return tags
 
-    return tags, tagConnections
+
+def getLogin(data):
+    login = data[LOGIN_ID]
+    return login
+
+
+def getPassword(data):
+    pwd = data[PASSWORD_ID]
+    return pwd
