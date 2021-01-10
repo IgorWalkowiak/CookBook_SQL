@@ -34,14 +34,15 @@ def tryRegister(login, password):
     if user is not None:
         return False
 
-    user = User(login, password, User.Privileges.guest)
+    user = User(login, password, User.Privileges.chef)
     db_session.add(user)
     db_session.commit()
     session['loggedIn'] = login
     return True
 
 
-def isAdmin(login):
+def isAdmin():
+    login = session['loggedIn']
     user = User.query.filter(User.name == login).first()
     if user is None:
         return False

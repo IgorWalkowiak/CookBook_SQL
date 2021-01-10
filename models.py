@@ -7,7 +7,6 @@ from database import Base
 class User(Base):
     __tablename__ = 'users'
     class Privileges(enum.Enum):
-        guest = 'Guest'
         chef = 'Chef'
         admin = 'Admin'
     id = Column(Integer, primary_key=True)

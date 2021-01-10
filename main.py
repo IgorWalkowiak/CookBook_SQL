@@ -1,11 +1,12 @@
 from database import init_db, db_session
 from sqlalchemy import func, case
 from models import Tag, RecipesType, User, Recipe, Step, Ingredients, Vote
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request
 import credentials
 import parser
 import userSystem
 import frontendModels
+import recipeSystem
 
 app = Flask(__name__)
 app.secret_key = credentials.sessionSecretKey
@@ -24,6 +25,8 @@ def logout():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if userSystem.isLoggedIn():
+        return render_template('/index.html')
     if request.method == 'POST':
         login = parser.getLogin(request.form)
         password = parser.getPassword(request.form)
@@ -38,6 +41,8 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if userSystem.isLoggedIn():
+        return render_template('/index.html')
     if request.method == 'POST':
         login = parser.getLogin(request.form)
         password = parser.getPassword(request.form)
@@ -52,29 +57,43 @@ def register():
 
 @app.route('/admin')
 def admin():
-    isAdmin = True
-    #isAdmin = userSystem.isAdmin(login)
-    if isAdmin:
-        users = User.query.all()
-        return render_template('/login/adminPanel.html', users=users)
+    if userSystem.isLoggedIn():
+        if userSystem.isAdmin():
+            users = User.query.all()
+            return render_template('/login/adminPanel.html', users=users)
     return render_template('/index.html')
-
 
 @app.route('/admin/remove/<usr>')
 def adminRemoveUser(usr):
-    User.query.filter(User.name == usr).delete(synchronize_session=False)
-    db_session.commit()
-    return render_template('/index.html')
+    if userSystem.isLoggedIn():
+        if userSystem.isAdmin():
+            User.query.filter(User.name == usr).delete(synchronize_session=False)
+            User.query.filter(User.name == usr).delete(synchronize_session=False)
+            db_session.commit()
+    return admin()
 
 
 @app.route('/admin/makeAdmin/<usr>')
 def adminMakeAdmin(usr):
-    pass
+    if userSystem.isLoggedIn():
+        if userSystem.isAdmin():
+            user = User.query.filter(User.name == usr).first()
+            user.privileges = User.Privileges.admin
+            db_session.add(user)
+            db_session.commit()
+    return admin()
+
 
 
 @app.route('/admin/makeChef/<usr>')
 def adminMakeChef(usr):
-    pass
+    if userSystem.isLoggedIn():
+        if userSystem.isAdmin():
+            user = User.query.filter(User.name == usr).first()
+            user.privileges = User.Privileges.chef
+            db_session.add(user)
+            db_session.commit()
+    return admin()
 
 
 @app.route('/recipes/browseRecipes', methods=['GET', 'POST'])
@@ -101,7 +120,7 @@ def browseRecipes():
         textToSearch = parser.getTextSearch(request.form)
         mainQuery = Recipe.query
         if textToSearch != '':
-            mainQuery = mainQuery.filter(Recipe.description.contains('ryba'))
+            mainQuery = mainQuery.filter(Recipe.description.contains(textToSearch))
         if sortMethod == 'fromWorst':
             my_case = case(
                 [
@@ -151,11 +170,7 @@ def browseRecipes():
             recipe = frontendModels.Recipe(dbRecipe.id, dbOwner.name, dbRecipe.title, dbRecipe.description, dbRecipe.calories, dbSteps,
                                            dbIngredients, dbTags, dbVotesUp, dbVotesDown)
             recipes.append(recipe)
-        print(sortMethod)
-        print(tagToSearch)
-        print(textToSearch)
         return render_template('recipes/browseRecipes.html', recipes=recipes)
-
 
 
 @app.route('/recipes/newRecipe', methods=['GET', 'POST'])
@@ -194,27 +209,22 @@ def newRecipe():
         return render_template('/login/login.html')
 
 
+@app.route('/recipes/removeRecipe/<recipeId>')
+def removeRecipe(recipeId):
+    recipeSystem.removeRecipe(recipeId)
+    return render_template('/index.html')
+
+
 @app.route('/recipes/recipe/<recipeId>')
 def recipe(recipeId):
-    dbRecipe = Recipe.query.filter(Recipe.id == recipeId).first()
-    dbSteps = Step.query.filter(Step.recipe == dbRecipe.id).all()
-    dbOwner = User.query.filter(User.id == dbRecipe.owner).first()
-    dbIngredients = Ingredients.query.filter(Ingredients.recipe == dbRecipe.id).all()
-    dbVotesUp = Vote.query.filter(Vote.voteType == Vote.VoteType.up).filter(Vote.target == dbRecipe.id).count()
-    dbVotesDown = Vote.query.filter(Vote.voteType == Vote.VoteType.down).filter(Vote.target == dbRecipe.id).count()
-    dbTags = (db_session.query(Tag)
-              .join(RecipesType, RecipesType.tag == Tag.id)) \
-        .filter(RecipesType.recipe == dbRecipe.id)
-    recipe = frontendModels.Recipe(dbRecipe.id, dbOwner.name, dbRecipe.title, dbRecipe.description, dbRecipe.calories, dbSteps,
-                                   dbIngredients, dbTags, dbVotesUp, dbVotesDown)
-    return render_template('recipes/recipe.html', recipe=recipe)
-
+    front_recipe = recipeSystem.getRecipe(recipeId)
+    return render_template('recipes/recipe.html', recipe=front_recipe)
 
 
 @app.route('/recipes/voteUp/<recipeId>')
 def voteUp(recipeId):
     if userSystem.isLoggedIn():
-        dbVote = Vote.query.filter(Vote.fromUser == userSystem.getUserId()).filter(Vote.target == recipeId).delete(synchronize_session=False)
+        Vote.query.filter(Vote.fromUser == userSystem.getUserId()).filter(Vote.target == recipeId).delete(synchronize_session=False)
         db_session.commit()
 
         vote = Vote(userSystem.getUserId(), recipeId, Vote.VoteType.up)
@@ -226,7 +236,7 @@ def voteUp(recipeId):
 @app.route('/recipes/voteDown/<recipeId>')
 def voteDown(recipeId):
     if userSystem.isLoggedIn():
-        dbVote = Vote.query.filter(Vote.fromUser == userSystem.getUserId()).filter(Vote.target == recipeId).delete(synchronize_session=False)
+        Vote.query.filter(Vote.fromUser == userSystem.getUserId()).filter(Vote.target == recipeId).delete(synchronize_session=False)
         db_session.commit()
 
         vote = Vote(userSystem.getUserId(), recipeId, Vote.VoteType.down)

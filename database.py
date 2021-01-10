@@ -16,9 +16,8 @@ meta = MetaData()
 
 
 class Privileges(enum.Enum):
-   guest = 1
-   chef = 2
-   admin = 3
+   chef = 1
+   admin = 2
 
 user = Table(
    'users', meta,
