@@ -1,6 +1,8 @@
 from models import User
 from database import db_session
 from flask import session
+from models import Tag, RecipesType, User, Recipe, Step, Ingredients, Vote
+import recipeSystem
 
 
 def isLoggedIn():
@@ -60,3 +62,12 @@ def getUserId():
     except KeyError:
         session['loggedIn'] = None
     return -1
+
+
+def removeUser(userId):
+    ownedRecipes = Recipe.query.filter(Recipe.owner == userId)
+    for recipe in ownedRecipes:
+        recipeSystem.removeRecipe(recipe.id)
+    Vote.query.filter(Vote.fromUser == userId).delete(synchronize_session=False)
+    User.query.filter(User.id == userId).delete(synchronize_session=False)
+    db_session.commit()

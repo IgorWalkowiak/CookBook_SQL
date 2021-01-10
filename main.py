@@ -1,5 +1,5 @@
 from database import init_db, db_session
-from models import Tag, RecipesType, User, Vote
+from models import Tag, RecipesType, User, Vote, Recipe
 from flask import Flask, render_template, request
 import credentials
 import parser
@@ -65,9 +65,7 @@ def admin():
 def adminRemoveUser(usr):
     if userSystem.isLoggedIn():
         if userSystem.isAdmin():
-            User.query.filter(User.name == usr).delete(synchronize_session=False)
-            User.query.filter(User.name == usr).delete(synchronize_session=False)
-            db_session.commit()
+            userSystem.removeUser(usr)
     return admin()
 
 
@@ -75,7 +73,7 @@ def adminRemoveUser(usr):
 def adminMakeAdmin(usr):
     if userSystem.isLoggedIn():
         if userSystem.isAdmin():
-            user = User.query.filter(User.name == usr).first()
+            user = User.query.filter(User.id == usr).first()
             user.privileges = User.Privileges.admin
             db_session.add(user)
             db_session.commit()
@@ -87,7 +85,7 @@ def adminMakeAdmin(usr):
 def adminMakeChef(usr):
     if userSystem.isLoggedIn():
         if userSystem.isAdmin():
-            user = User.query.filter(User.name == usr).first()
+            user = User.query.filter(User.id == usr).first()
             user.privileges = User.Privileges.chef
             db_session.add(user)
             db_session.commit()
