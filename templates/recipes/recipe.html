@@ -10,6 +10,7 @@
       <h3> Recipe! </h3>
         <div class = 'title'> {{recipe.title}}</div>
         <div class  = 'description'>{{recipe.description}}</div>
+        <div class = 'owner'> {{recipe.owner}}</div>
 
         {% for step in recipe.steps %}
           <div class = 'step'>{{step.description}}</div>
@@ -34,12 +35,15 @@
 
       <div class="tags">
         {% for tag in recipe.tags %}
-          <div class = 'tag'>
-                    <a class ='moreLink' href='/recipes/recipe/{{recipe.id}}'> Read more! </a></div>
+          <p class = 'tag'>
+            {{tag.name}}</p>
         {% endfor %}
         <br>
       </div>
     </div>
+
+    <a href="/recipes/removeRecipe/{{recipe.id}}">Remove recipe</a><br><br>
+
     <nav>
     <a href="/">Home</a>
     <a href="/recipes/browseRecipes">Browse recipes</a>
