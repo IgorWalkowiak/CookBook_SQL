@@ -4,7 +4,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import MetaData, Table, Column, Integer, String, Enum, create_engine, ForeignKey
 
-engine = create_engine('mysql://{}:{}@localhost/CookBook'.format(credentials.login,credentials.password))
+engine = create_engine('mysql://{}:{}@{}/cookbook'.format(credentials.login, credentials.password, credentials.host_address))
 db_session = scoped_session(sessionmaker(autocommit=False,
                                          autoflush=False,
                                          bind=engine))
@@ -22,9 +22,9 @@ class Privileges(enum.Enum):
 user = Table(
    'users', meta,
    Column('id', Integer, primary_key=True),
-   Column('name', String(100)),
-   Column('password', String(100)),
-   Column('privileges', Enum(Privileges))
+   Column('name', String(100), nullable=False),
+   Column('password', String(100), nullable=False),
+   Column('privileges', Enum(Privileges), nullable=False)
 )
 
 recipe = Table(
@@ -48,14 +48,14 @@ ingredient = Table(
 step = Table(
    'steps', meta,
    Column('id', Integer, primary_key=True),
-   Column('recipe', Integer, ForeignKey("recipes.id")),
-   Column('description', String(100)),
+   Column('recipe', Integer, ForeignKey("recipes.id"), nullable=False),
+   Column('description', String(100), nullable=False),
 )
 
 tag = Table(
    'tags', meta,
    Column('id', Integer, primary_key=True),
-   Column('name', String(100), unique=True),
+   Column('name', String(100), unique=True, nullable=False),
 )
 
 recipes_type = Table(

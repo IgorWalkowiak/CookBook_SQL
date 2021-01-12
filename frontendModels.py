@@ -11,4 +11,3 @@ class Recipe:
         self.tags = tags
         self.votesUp = votesUp
         self.votesDown = votesDown
-        self.sum = votesUp-votesDown

@@ -4,13 +4,16 @@ import frontendModels
 from sqlalchemy import func, case
 
 
-def removeRecipe(recipeId):
-    Vote.query.filter(Vote.target == recipeId).delete(synchronize_session=False)
-    Step.query.filter(Step.recipe == recipeId).delete(synchronize_session=False)
-    RecipesType.query.filter(RecipesType.recipe == recipeId).delete(synchronize_session=False)
-    Ingredients.query.filter(Ingredients.recipe == recipeId).delete(synchronize_session=False)
-    Recipe.query.filter(Recipe.id == recipeId).delete(synchronize_session=False)
-    db_session.commit()
+def removeRecipe(recipeId, userId):
+    recipe = Recipe.query.filter(Recipe.id == recipeId).filter(Recipe.owner == userId).first()
+    print(recipe)
+    if recipe is not None:
+        Vote.query.filter(Vote.target == recipeId).delete(synchronize_session=False)
+        Step.query.filter(Step.recipe == recipeId).delete(synchronize_session=False)
+        RecipesType.query.filter(RecipesType.recipe == recipeId).delete(synchronize_session=False)
+        Ingredients.query.filter(Ingredients.recipe == recipeId).delete(synchronize_session=False)
+        Recipe.query.filter(Recipe.id == recipeId).delete(synchronize_session=False)
+        db_session.commit()
 
 
 def getRecipe(recipeId):

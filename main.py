@@ -143,8 +143,8 @@ def newRecipe():
 
 @app.route('/recipes/removeRecipe/<recipeId>')
 def removeRecipe(recipeId):
-    recipeSystem.removeRecipe(recipeId)
-    return render_template('/index.html')
+    recipeSystem.removeRecipe(recipeId, userSystem.getUserId())
+    return browseRecipes()
 
 
 @app.route('/recipes/recipe/<recipeId>')
