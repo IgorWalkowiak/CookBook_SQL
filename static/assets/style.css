@@ -42,7 +42,7 @@ font-size : 2em;
 
 .recipe{
 background-color: lightslategray;
-width: 400px;
+width: 500px;
 border: 5px solid red;
 padding: 10px;
 margin: 10px;
@@ -50,7 +50,7 @@ margin: 10px;
 }
 
 .recipes{  
-  width: 750px;
+  width: 850px;
   border: 15px solid black;
   padding: 20px;
   margin: 20px;
