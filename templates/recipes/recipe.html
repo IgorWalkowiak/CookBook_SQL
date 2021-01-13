@@ -6,6 +6,15 @@
     <link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='assets/style.css') }}">
   </head>
   <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/recipes/browseRecipes">Browse recipes</a>
+      <a href='/recipes/newRecipe'>Add new recipe</a>
+      <a href='/logout'>Logout  </a>
+      <a href='/admin'>Admin panel </a>
+      <a href='/login'>Login</a>
+      <a href='/register'>Register</a>
+  </nav><br><br>
     <div class = "recipes">
       <h3> Recipe! </h3>
         <div class = 'title'> {{recipe.title}}</div>
@@ -28,8 +37,7 @@
         Positive: {{recipe.votesUp}}
         <a class ='moreLink' href='/recipes/voteUp/{{recipe.id}}'>Vote up</a><br>
         Negative: {{recipe.votesDown}}
-        <a class ='moreLink' href='/recipes/voteDown/{{recipe.id}}'>Vote down</a><br>
-        Rate: {{recipe.sum}}<br><br><br><br>
+        <a class ='moreLink' href='/recipes/voteDown/{{recipe.id}}'>Vote down</a><br><br><br><br><br>
         <div>
 
 
@@ -41,17 +49,12 @@
         <br>
       </div>
     </div>
+          {% if recipe.video %}
+        <iframe width="560" height="315" src="{{recipe.video}}" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        {% else %}
+          <p>Brak filmu</p>
+        {% endif %}
 
-    <a href="/recipes/removeRecipe/{{recipe.id}}">Remove recipe</a><br><br>
-
-  <nav>
-      <a href="/">Home</a>
-      <a href="/recipes/browseRecipes">Browse recipes</a>
-      <a href='/recipes/newRecipe'>Add new recipe</a>
-      <a href='/logout'>Logout  </a>
-      <a href='/admin'>Admin panel </a>
-      <a href='/login'>Login</a>
-      <a href='/register'>Register</a>
-  </nav>
-  </body>
+ <a href="/recipes/removeRecipe/{{recipe.id}}">Remove recipe</a><br><br>
+</body>
 </html>

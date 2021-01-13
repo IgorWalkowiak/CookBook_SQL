@@ -33,7 +33,8 @@ recipe = Table(
    Column('owner', Integer, ForeignKey("users.id", ondelete='CASCADE')),
    Column('title', String(100)),
    Column('description', String(1000)),
-   Column('calories', Integer)
+   Column('calories', Integer),
+   Column('video', String(1000))
 )
 
 ingredient = Table(

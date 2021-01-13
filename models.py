@@ -30,12 +30,14 @@ class Recipe(Base):
     title = Column(String(100))
     description = Column(String(1000))
     calories = Column(Integer)
+    video = Column(String(1000))
 
-    def __init__(self, owner=None, title=None, description=None, calories=None):
+    def __init__(self, owner=None, title=None, description=None, calories=None, video=None):
         self.owner = owner
         self.title = title
         self.description = description
         self.calories = calories
+        self.video = video
 
     def __repr__(self):
         return '<title %r>' % (self.title)

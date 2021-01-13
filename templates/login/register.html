@@ -6,6 +6,15 @@
     <link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='assets/style.css') }}">
   </head>
   <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/recipes/browseRecipes">Browse recipes</a>
+      <a href='/recipes/newRecipe'>Add new recipe</a>
+      <a href='/logout'>Logout  </a>
+      <a href='/admin'>Admin panel </a>
+      <a href='/login'>Login</a>
+      <a href='/register'>Register</a>
+  </nav><br><br>
   <h2> Register! </h2>
     <form id="form1" action="/register" method="post">
 		<label for="login">Login: </label><br>
@@ -20,14 +29,6 @@
     {% if failed == 1 %}
         <p class="error">Nie udało się zarejestrować</p><br><br>
     {% endif %}
-  <nav>
-      <a href="/">Home</a>
-      <a href="/recipes/browseRecipes">Browse recipes</a>
-      <a href='/recipes/newRecipe'>Add new recipe</a>
-      <a href='/logout'>Logout  </a>
-      <a href='/admin'>Admin panel </a>
-      <a href='/login'>Login</a>
-      <a href='/register'>Register</a>
-  </nav>
+
   </body>
 </html>

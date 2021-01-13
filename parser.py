@@ -1,4 +1,4 @@
-from models import User, Recipe, Ingredients, Step, Tag, RecipesType, Vote
+from models import Recipe, Ingredients, Step, Tag
 
 TITLE_ID = 'title'
 DESCRIPTION_ID = 'description'
@@ -14,18 +14,20 @@ TAG_SEPARATOR = ", "
 SORT_METHOD_ID = 'sort'
 SEARCH_TEXT_ID = 'textSearch'
 SEARCH_TAG_ID = 'tag'
+VIDEO_ID = 'video'
 
 def getRecipe(data, ownerId):
     title = data[TITLE_ID]
     desc = data[DESCRIPTION_ID]
     calories = data[CALORIES_ID]
-    recipe = Recipe(ownerId, title, desc, calories)
+    video = data[VIDEO_ID]
+    recipe = Recipe(ownerId, title, desc, calories, video)
     return recipe
 
 
 def getIngredients(data, recipeId):
     ingredients = []
-    for i in range(1,20,1):
+    for i in range(1, 20, 1):
         try:
             name = data[INGREDIENT_NAME_ID+str(i)]
             unit = data[INGREDIENT_UNIT_ID+str(i)]
@@ -34,7 +36,6 @@ def getIngredients(data, recipeId):
         except:
             break
     return ingredients
-
 
 def getSortMethod(data):
     method = data[SORT_METHOD_ID]
@@ -53,7 +54,7 @@ def getTagSearch(data):
 
 def getSteps(data, recipeId):
     steps = []
-    for i in range(1,20,1):
+    for i in range(1, 20, 1):
         try:
             desc = data[STEP_ID+str(i)]
             steps.append(Step(recipeId, desc))

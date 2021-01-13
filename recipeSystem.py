@@ -17,17 +17,24 @@ def removeRecipe(recipeId, userId):
 
 
 def getRecipe(recipeId):
-    dbRecipe = Recipe.query.filter(Recipe.id == recipeId).first()
-    dbSteps = Step.query.filter(Step.recipe == dbRecipe.id).all()
-    dbOwner = User.query.filter(User.id == dbRecipe.owner).first()
-    dbIngredients = Ingredients.query.filter(Ingredients.recipe == dbRecipe.id).all()
-    dbVotesUp = Vote.query.filter(Vote.voteType == Vote.VoteType.up).filter(Vote.target == dbRecipe.id).count()
-    dbVotesDown = Vote.query.filter(Vote.voteType == Vote.VoteType.down).filter(Vote.target == dbRecipe.id).count()
+    print("getRecipe")
+
+    dbRecipes = Recipe.query.filter(Recipe.id == recipeId).all()
+    for a in dbRecipes:
+        print(a.id)
+        print(a.title)
+        print(a.description)
+        print(a.owner)
+    dbSteps = Step.query.filter(Step.recipe == recipeId).all()
+    dbOwner = User.query.filter(User.id == a.owner).first()
+    dbIngredients = Ingredients.query.filter(Ingredients.recipe == recipeId).all()
+    dbVotesUp = Vote.query.filter(Vote.voteType == Vote.VoteType.up).filter(Vote.target == recipeId).count()
+    dbVotesDown = Vote.query.filter(Vote.voteType == Vote.VoteType.down).filter(Vote.target == recipeId).count()
     dbTags = (db_session.query(Tag)
               .join(RecipesType, RecipesType.tag == Tag.id)) \
-        .filter(RecipesType.recipe == dbRecipe.id)
-    recipe = frontendModels.Recipe(dbRecipe.id, dbOwner.name, dbRecipe.title, dbRecipe.description, dbRecipe.calories, dbSteps,
-                                   dbIngredients, dbTags, dbVotesUp, dbVotesDown)
+        .filter(RecipesType.recipe == a.id)
+    recipe = frontendModels.Recipe(a.id, dbOwner.name, a.title, a.description, a.calories, dbSteps,
+                                   dbIngredients, a.video, dbTags, dbVotesUp, dbVotesDown)
     return recipe
 
 
@@ -45,7 +52,7 @@ def getAllRecipes():
             .filter(RecipesType.recipe == dbRecipe.id)
         recipe = frontendModels.Recipe(dbRecipe.id, dbOwner.name, dbRecipe.title, dbRecipe.description,
                                        dbRecipe.calories, dbSteps,
-                                       dbIngredients, dbTags, dbVotesUp, dbVotesDown)
+                                       dbIngredients,dbRecipe.video, dbTags, dbVotesUp, dbVotesDown)
         recipes.append(recipe)
     return recipes
 
