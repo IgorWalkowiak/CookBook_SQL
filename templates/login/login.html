@@ -6,23 +6,25 @@
     <link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='assets/style.css') }}">
   </head>
   <body>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/recipes/browseRecipes">Browse recipes</a>
-      <a href='/recipes/newRecipe'>Add new recipe</a>
-      <a href='/logout'>Logout  </a>
-      <a href='/admin'>Admin panel </a>
-      <a href='/login'>Login</a>
-      <a href='/register'>Register</a>
-  </nav><br><br>
+  <nav>
+      <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/recipes/browseRecipes">Browse recipes</a></li>
+          <li><a href='/recipes/newRecipe'>Add new recipe</a></li>
+          <li><a href='/logout'>Logout  </a></li>
+          <li><a href='/admin'>Admin panel </a></li>
+          <li><a href='/login'>Login</a></li>
+          <li><a href='/register'>Register</a></li>
+      </ul><br><br>
+  </nav>
     <div>
       <h2> Log in! </h2>
         <form id="form1" action="/login" method="post">
             <label for="login">Login: </label><br>
-            <input type="text" required id="login" name="login"><br>
+            <input type="text" required class="login" id="login" name="login"><br>
 
             <label for="password">Password: </label><br>
-            <input type="password" required id="password" name="password"><br>
+            <input type="password" required class='password' id="password" name="password"><br><br>
 
             <input type="submit" value="Log in!"><br>
         </form>

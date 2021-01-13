@@ -6,15 +6,17 @@
     <link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='assets/style.css') }}">
   </head>
   <body>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/recipes/browseRecipes">Browse recipes</a>
-      <a href='/recipes/newRecipe'>Add new recipe</a>
-      <a href='/logout'>Logout  </a>
-      <a href='/admin'>Admin panel </a>
-      <a href='/login'>Login</a>
-      <a href='/register'>Register</a>
-  </nav><br><br>
+  <nav>
+      <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/recipes/browseRecipes">Browse recipes</a></li>
+          <li><a href='/recipes/newRecipe'>Add new recipe</a></li>
+          <li><a href='/logout'>Logout  </a></li>
+          <li><a href='/admin'>Admin panel </a></li>
+          <li><a href='/login'>Login</a></li>
+          <li><a href='/register'>Register</a></li>
+      </ul><br><br>
+  </nav>
         <div class = 'user'>
         {% for user in users %}
           <p class = 'nickname'> {{user.name}}</p>

@@ -23,7 +23,7 @@ function addIngredient() {
     try {
     var ingredientDiv = document.createElement("div");
     ingredientDiv.setAttribute('id', "ingredient"+ingredientsNumber);
-    ingredientDiv.setAttribute('class', 'ingredient');
+    ingredientDiv.setAttribute('class', 'ingr');
     var parent = document.getElementById("ingredients");
     parent.appendChild(ingredientDiv);
     

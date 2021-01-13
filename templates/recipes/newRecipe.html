@@ -6,47 +6,89 @@
     <link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='assets/style.css') }}">
   </head>
   <body>
-   <nav>
-      <a href="/">Home</a>
-      <a href="/recipes/browseRecipes">Browse recipes</a>
-      <a href='/recipes/newRecipe'>Add new recipe</a>
-      <a href='/logout'>Logout  </a>
-      <a href='/admin'>Admin panel </a>
-      <a href='/login'>Login</a>
-      <a href='/register'>Register</a>
-  </nav><br><br>
+  <nav>
+      <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/recipes/browseRecipes">Browse recipes</a></li>
+          <li><a href='/recipes/newRecipe'>Add new recipe</a></li>
+          <li><a href='/logout'>Logout  </a></li>
+          <li><a href='/admin'>Admin panel </a></li>
+          <li><a href='/login'>Login</a></li>
+          <li><a href='/register'>Register</a></li>
+      </ul><br><br>
+  </nav>
   <script src="{{ url_for('static',filename='assets/newRecipeScripts.js') }}"> </script>
+
+	<div class="container">
   	<form id="form1" action="/recipes/newRecipe" method="post">
-		<label for="title">Title: </label><br>
-		<input type="text" placeholder="e.g. Burrito" id="title" name="title" width="48" height="48"><br>
+		<div class ='row'>
+			<div class='col-25'>
+				<label for="title">Title: </label>
+			</div>
+			<div class="col-75">
+				<input type="text" placeholder="e.g. Burrito" id="title" name="title" width="48" height="48"><br>
+			</div>
+		</div>
+		<div class ='row'>
+			<div class='col-25'>
+				<label for="description">Description: </label>
+			</div>
+			<div class="col-75">
+				<input type="text" placeholder="e.g. Chicken with rice" id="description" name="description"><br>
+			</div>
+		</div>
+		<div class ='row'>
+			<div class='col-25'>
+				<label for="calories">Calories: </label>
+			</div>
+			<div class="col-75">
+				<input type="text" id="calories" name="calories"><br>
+			</div>
+		</div>
+		<div class ='row'>
+			<div class='col-25'>
+				<label for="ingredients">Ingredients: </label><br><br>
+				<input type = "button" onClick="addIngredient()" value="Add next ingredient"><br><br>
+				<input type = "button" onClick="removeIngredient()" value="Remove previous ingredient">
+			</div>
+			<div class="col-75">
+				<div id="ingredients"> </div>
+			</div>
+		</div>
+		<div class ='row'>
+			<div class='col-25'>
+				<label for="steps">Steps: </label><br><br>
+				<input type = "button" onClick="addStep()" value="Add next step"><br><br>
+				<input type = "button" onClick="removeStep()" value="Remove previous step">
+			</div>
+			<div class="col-75">
+				<div id="steps"> </div>
+			</div>
+		</div>
 
-		<label for="description">Description: </label><br>
-		<input type="text" placeholder="e.g. Chicken with rice" id="description" name="description"><br>
+		<div class ='row'>
+			<div class='col-25'>
+				<label for="video">Video: </label><br>
+			</div>
+			<div class="col-75">
+				<input type="text" id="video" name="video"><br>
+			</div>
+		</div>
 
-		<label for="calories">Calories: </label><br>
-		<input type="text" id="calories" name="calories"><br>
+		<div class ='row'>
+			<div class='col-25'>
+				<label for="tags">Tags: </label><br>
+			</div>
+			<div class="col-75">
+				<input type="text" id="tags" name="tags"><br>
+			</div>
+		</div>
 
-		<label for="ingredients">Ingredients: </label><br>
-		<input type = "button" onClick="addIngredient()" value="Add next ingredient">
-		<input type = "button" onClick="removeIngredient()" value="Remove previous ingredient">
-		<div id="ingredients"> </div>
-
-		<label for="steps">Steps: </label><br>
-		<input type = "button" onClick="addStep()" value="Add next step">
-		<input type = "button" onClick="removeStep()" value="Remove previous step">
-		<div id="steps"> </div>
-
-
-		<label for="video">Video: </label><br>
-		<input type="text" id="video" name="video"><br>
-
-
-		<label for="tags">Tags: </label><br>
-		<input type="text" id="tags" name="tags"><br>
-		<input type="submit" value="Add recipe"><br>
+		<input class='addRecipe' type="submit" value="Add recipe"><br>
 	</form>
-	<br><br><br><br><br>
-	<div id="errors"></div>
+</div>
+<br><br><br><br><br>
+<div id="errors"></div>
 
   </body>
 </html>

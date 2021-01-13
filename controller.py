@@ -107,7 +107,6 @@ def newRecipePage():
             db_session.commit()
 
             for tag in tags:
-                print(tag)
                 db_session.add(tag)
                 try:
                     db_session.commit()
@@ -128,7 +127,6 @@ def removeRecipePage(recipeId):
     return browseRecipesPage()
 
 def recipePage(recipeId):
-    print('recipePage')
     front_recipe = recipeSystem.getRecipe(recipeId)
     return render_template('recipes/recipe.html', recipe=front_recipe)
 
@@ -136,6 +134,7 @@ def voteUpPage(recipeId):
     if userSystem.isLoggedIn():
         Vote.query.filter(Vote.fromUser == userSystem.getUserId()).filter(Vote.target == recipeId).delete(synchronize_session=False)
         db_session.commit()
+
 
         vote = Vote(userSystem.getUserId(), recipeId, Vote.VoteType.up)
         db_session.add(vote)

@@ -6,55 +6,73 @@
     <link rel="stylesheet" type= "text/css" href="{{ url_for('static',filename='assets/style.css') }}">
   </head>
   <body>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/recipes/browseRecipes">Browse recipes</a>
-      <a href='/recipes/newRecipe'>Add new recipe</a>
-      <a href='/logout'>Logout  </a>
-      <a href='/admin'>Admin panel </a>
-      <a href='/login'>Login</a>
-      <a href='/register'>Register</a>
-  </nav><br><br>
+  <nav>
+      <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/recipes/browseRecipes">Browse recipes</a></li>
+          <li><a href='/recipes/newRecipe'>Add new recipe</a></li>
+          <li><a href='/logout'>Logout  </a></li>
+          <li><a href='/admin'>Admin panel </a></li>
+          <li><a href='/login'>Login</a></li>
+          <li><a href='/register'>Register</a></li>
+      </ul><br><br>
+  </nav>
     <div class = "recipes">
-      <h3> Recipe! </h3>
-        <div class = 'title'> {{recipe.title}}</div>
-        <div class  = 'description'>{{recipe.description}}</div>
-        <div class = 'owner'> {{recipe.owner}}</div>
+      <h3> {{recipe.title}} </h3>
+        <h2>{{recipe.description}}</h2>
+        <p class = 'author'>author: {{recipe.owner}}</p>
+        <div class="clearfix">
+            <div class="recipe-section">
+                {% for step in recipe.steps %}
+                 <div class = 'step'>{{step.description}}</div>
+                {% endfor %}
+            </div>
 
-        {% for step in recipe.steps %}
-          <div class = 'step'>{{step.description}}</div>
-        {% endfor %}
+            <div class="recipe-section">
+                {% for ingredient in recipe.ingredients %}
+                  <div class = 'ingredient'>{{ingredient.name}}<br>
+                    {{ingredient.unit}} {{ingredient.amount}}
+                  </div>
+                {% endfor %}
+            </div>
+        </div>
 
-        {% for ingredient in recipe.ingredients %}
-          <div class = 'ingredient'>{{ingredient.name}}<br>
-            {{ingredient.unit}} {{ingredient.amount}}
-          </div>
-        {% endfor %}
+<br><br><br><br><br>
+<br><br><br><br><br>
 
-
-
+            <br><br><br><br><br>
+            <br><br><br><br><br>
+            <br><br><br><br><br>
       <div class = 'votes'>
-        Positive: {{recipe.votesUp}}
-        <a class ='moreLink' href='/recipes/voteUp/{{recipe.id}}'>Vote up</a><br>
-        Negative: {{recipe.votesDown}}
-        <a class ='moreLink' href='/recipes/voteDown/{{recipe.id}}'>Vote down</a><br><br><br><br><br>
-        <div>
+
+          <div class = 'a'>
+              Positive: {{recipe.votesUp}}
+                <a class ='moreLink' href='/recipes/voteUp/{{recipe.id}}'>Vote up</a><br>
+          </div>
+            <br>
+          <div class = 'a'>
+              Negative: {{recipe.votesDown}}
+            <a class ='moreLink' href='/recipes/voteDown/{{recipe.id}}'>Vote down</a>
+          </div>
+
+            <br><br><br><br><br>
+      </div>
 
 
-      <div class="tags">
+      <div class="tags">Tags:
         {% for tag in recipe.tags %}
           <p class = 'tag'>
-            {{tag.name}}</p>
+            {{tag.name}},</p>
         {% endfor %}
         <br>
       </div>
-    </div>
           {% if recipe.video %}
         <iframe width="560" height="315" src="{{recipe.video}}" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture" allowfullscreen></iframe>
         {% else %}
           <p>Brak filmu</p>
         {% endif %}
-
+<br>
  <a href="/recipes/removeRecipe/{{recipe.id}}">Remove recipe</a><br><br>
+      </div>
 </body>
 </html>

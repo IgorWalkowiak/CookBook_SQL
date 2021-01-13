@@ -110,6 +110,6 @@ def getSpecificRecipe(sortMethod, tagToSearch, textToSearch):
             .filter(RecipesType.recipe == dbRecipe.id)
         recipe = frontendModels.Recipe(dbRecipe.id, dbOwner.name, dbRecipe.title, dbRecipe.description,
                                        dbRecipe.calories, dbSteps,
-                                       dbIngredients, dbTags, dbVotesUp, dbVotesDown)
+                                       dbIngredients, dbRecipe.video, dbTags, dbVotesUp, dbVotesDown)
         recipes.append(recipe)
     return recipes
