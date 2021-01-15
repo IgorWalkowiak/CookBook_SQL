@@ -67,7 +67,7 @@ def getUserId():
 def removeUser(userId):
     ownedRecipes = Recipe.query.filter(Recipe.owner == userId)
     for recipe in ownedRecipes:
-        recipeSystem.removeRecipe(recipe.id, userId)
+        recipeSystem.recipe_system.removeRecipe(recipe.id, userId)
     Vote.query.filter(Vote.fromUser == userId).delete(synchronize_session=False)
     User.query.filter(User.id == userId).delete(synchronize_session=False)
     db_session.commit()

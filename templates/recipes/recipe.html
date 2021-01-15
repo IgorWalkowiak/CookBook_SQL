@@ -22,13 +22,13 @@
         <h2>{{recipe.description}}</h2>
         <p class = 'author'>author: {{recipe.owner}}</p>
         <div class="clearfix">
-            <div class="recipe-section">
+            <div class="recipe-section" style="background-color:#ccc">
                 {% for step in recipe.steps %}
                  <div class = 'step'>{{step.description}}</div>
                 {% endfor %}
             </div>
 
-            <div class="recipe-section">
+            <div class="recipe-section" style="background-color:#aaa">
                 {% for ingredient in recipe.ingredients %}
                   <div class = 'ingredient'>{{ingredient.name}}<br>
                     {{ingredient.unit}} {{ingredient.amount}}

@@ -1,5 +1,5 @@
 from database import init_db
-from flask import Flask
+from flask import Flask, request
 import credentials
 import controller
 
@@ -20,12 +20,18 @@ def logout():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    return controller.loginPage()
+    if request.method =='GET':
+        return controller.loginPage()
+    elif request.method =='POST':
+        return controller.loginPage(request.form)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    return controller.registerPage()
+    if request.method =='GET':
+        return controller.registerPage()
+    elif request.method =='POST':
+        return controller.registerPage(request.form)
 
 
 @app.route('/admin')
@@ -50,12 +56,18 @@ def adminMakeChef(usr):
 
 @app.route('/recipes/browseRecipes', methods=['GET', 'POST'])
 def browseRecipes():
-    return controller.browseRecipesPage()
+    if request.method =='GET':
+        return controller.browseRecipesPage()
+    elif request.method =='POST':
+        return controller.browseRecipesPage(request.form)
 
 
 @app.route('/recipes/newRecipe', methods=['GET', 'POST'])
 def newRecipe():
-    return controller.newRecipePage()
+    if request.method =='GET':
+        return controller.newRecipePage()
+    elif request.method =='POST':
+        return controller.newRecipePage(request.form)
 
 
 @app.route('/recipes/removeRecipe/<recipeId>')
@@ -65,7 +77,6 @@ def removeRecipe(recipeId):
 
 @app.route('/recipes/recipe/<recipeId>')
 def recipe(recipeId):
-    print('route')
     return controller.recipePage(recipeId)
 
 

@@ -1,9 +1,9 @@
-from flask import render_template, request
-from models import Tag, RecipesType, User, Vote
+from flask import render_template
+from models import User, Vote
 from database import db_session
 import userSystem
 import parser
-import recipeSystem
+from recipeSystem import recipe_system
 
 
 def homePage():
@@ -15,33 +15,35 @@ def logoutPage():
     return render_template('index.html')
 
 
-def loginPage():
+def loginPage(network_data=None):
     if userSystem.isLoggedIn():
         return render_template('/index.html')
-    if request.method == 'POST':
-        login = parser.getLogin(request.form)
-        password = parser.getPassword(request.form)
+    if network_data is None:
+        return render_template('/login/login.html')
+    else:
+        login = parser.getLogin(network_data)
+        password = parser.getPassword(network_data)
         loggedIn = userSystem.tryLogin(login, password)
         if loggedIn:
             return render_template('/index.html')
         else:
             return render_template('/login/login.html', failed=True)
-    else:
-        return render_template('/login/login.html')
 
-def registerPage():
+
+def registerPage(network_data=None):
     if userSystem.isLoggedIn():
         return render_template('/index.html')
-    if request.method == 'POST':
-        login = parser.getLogin(request.form)
-        password = parser.getPassword(request.form)
+    if network_data is None:
+        return render_template('/login/register.html')
+    else:
+        login = parser.getLogin(network_data)
+        password = parser.getPassword(network_data)
         registered = userSystem.tryRegister(login, password)
         if registered:
             return render_template('/index.html')
         else:
             return render_template('/login/register.html', failed=True)
-    else:
-        return render_template('/login/register.html')
+
 
 def adminPage():
     if userSystem.isLoggedIn():
@@ -78,57 +80,37 @@ def makeChefPage(usr):
     return adminPage()
 
 
-def browseRecipesPage():
-    if request.method == 'GET':
-        front_recipes = recipeSystem.getAllRecipes()
+def browseRecipesPage(network_data=None):
+    if network_data is None:
+        front_recipes = recipe_system.getAllRecipes()
         return render_template('recipes/browseRecipes.html', recipes=front_recipes)
-    elif request.method == 'POST':
-        sortMethod = parser.getSortMethod(request.form)
-        tagToSearch = parser.getTagSearch(request.form)
-        textToSearch = parser.getTextSearch(request.form)
-        front_recipes = recipeSystem.getSpecificRecipe(sortMethod, tagToSearch, textToSearch)
+    else:
+        sortMethod = parser.getSortMethod(network_data)
+        tagToSearch = parser.getTagSearch(network_data)
+        textToSearch = parser.getTextSearch(network_data)
+        front_recipes = recipe_system.getSpecificRecipe(sortMethod, tagToSearch, textToSearch)
         return render_template('recipes/browseRecipes.html', recipes=front_recipes)
 
-def newRecipePage():
+def newRecipePage(network_data=None):
     if userSystem.isLoggedIn():
-        if request.method == 'POST':
-            recipe = parser.getRecipe(request.form, userSystem.getUserId())
-            db_session.add(recipe)
-            db_session.commit()
-
-            ingredients = parser.getIngredients(request.form, recipe.id)
-            steps = parser.getSteps(request.form, recipe.id)
-            tags = parser.getTags(request.form)
-
-            for ingredient in ingredients:
-                db_session.add(ingredient)
-            for step in steps:
-                db_session.add(step)
-            db_session.commit()
-
-            for tag in tags:
-                db_session.add(tag)
-                try:
-                    db_session.commit()
-                except Exception as err:
-                    db_session.rollback()
-                tag = Tag.query.filter(Tag.name == tag.name).first()
-                tagConnection = RecipesType(tag.id, recipe.id)
-                db_session.add(tagConnection)
-                db_session.commit()
-            return render_template('index.html')
-        else:
+        if network_data is None:
             return render_template('recipes/newRecipe.html')
+        else:
+            recipe_system.addRecipe(network_data)
+            return render_template('index.html')
     else:
         return render_template('/login/login.html')
 
+
 def removeRecipePage(recipeId):
-    recipeSystem.removeRecipe(recipeId, userSystem.getUserId())
+    recipe_system.removeRecipe(recipeId, userSystem.getUserId())
     return browseRecipesPage()
 
+
 def recipePage(recipeId):
-    front_recipe = recipeSystem.getRecipe(recipeId)
+    front_recipe = recipe_system.getRecipe(recipeId)
     return render_template('recipes/recipe.html', recipe=front_recipe)
+
 
 def voteUpPage(recipeId):
     if userSystem.isLoggedIn():
