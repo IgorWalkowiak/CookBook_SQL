@@ -10,23 +10,18 @@ import creators
 class RecipeSystem(OBS_interface.Subject):
     def __init__(self):
         self.creators = []
-        print('__init__')
 
     def attach(self, observer: OBS_interface.Observer) -> None:
-        print('attach')
         self.creators.append(observer)
 
     def detach(self, observer: OBS_interface.Observer) -> None:
         self.creators.remove(observer)
 
     def notify(self, recipeId, network_data) -> None:
-        print('notify')
         for creator in self.creators:
-            print('creator')
             creator.update(recipeId, network_data)
 
     def addRecipe(self, network_data):
-        print("addRecipe")
         recipe = parser.getRecipe(network_data, userSystem.getUserId())
         db_session.add(recipe)
         db_session.commit()

@@ -1,7 +1,6 @@
-from models import User
 from database import db_session
 from flask import session
-from models import Tag, RecipesType, User, Recipe, Step, Ingredients, Vote
+from models import User, Recipe, Vote
 import recipeSystem
 
 
